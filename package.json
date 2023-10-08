@@ -1,0 +1,18 @@
+{
+  "name": "upa-project-1",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@influxdata/influxdb-client": "^1.33.2",
+    "@influxdata/influxdb-client-apis": "^1.33.2",
+    "@types/xml2js": "^0.4.12",
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "xml2js": "^0.6.2"
+  }
+}
