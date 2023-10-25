@@ -1,5 +1,6 @@
-import { InfluxDB, Point, HttpError } from '@influxdata/influxdb-client';
-import { OrgsAPI, BucketsAPI } from '@influxdata/influxdb-client-apis';
+import { InfluxDB, Point, HttpError, FluxTableMetaData, flux } from '@influxdata/influxdb-client';
+import { OrgsAPI, BucketsAPI, PingAPI } from '@influxdata/influxdb-client-apis';
+import { Client } from './client';
 
 type TemperaturePoint = {
 	datum: string,
@@ -12,13 +13,15 @@ export type Temperature = {
 	}
 };
 
-export class InfluxDBClient {
+export class InfluxDBClient extends Client{
     url: string;
     token: string;
     org: string;
     _influxDB: InfluxDB;
 
     constructor(url: string, token: string, org: string) {
+        super();
+        
         this.url = url;
         this.token = token;
         this.org = org;
@@ -99,12 +102,38 @@ export class InfluxDBClient {
         }
     };
     
-    async queryData(query: string) {
+    async queryData() {
         const queryApi = this._influxDB.getQueryApi(this.org);
+        const queryFlux =  flux`from(bucket:${process.env.BUCKET})
+            |> range(start: 2023-09-14T12:00:00.000Z, stop: 2023-09-14T23:00:00.000Z)`;
+
+        this.log(`Querying data with ${queryFlux}`);
+
+        queryApi.queryRows(queryFlux, {
+            next: (row: string[], tableMeta: FluxTableMetaData) => {
+                const object = tableMeta.toObject(row);
+
+                console.log(object);
+            },
+            error: (error: Error) => {
+                this.log(`Query error: ${error}`);
+            },
+            complete: () => {
+                this.log('Query completed');
+            }
+        });
     };
 
-    log(text: string) {
-        console.log(`[+] ${text}`);
-    };
+    ping() {
+        const pingAPI = new PingAPI(this._influxDB);
 
+        pingAPI
+            .getPing()
+            .then(() => {
+                this.log('Ping Pong SUCCESS');
+            })
+            .catch(error => {
+                this.log(`Ping Pong ERROR ${error}`, 'ERROR');
+            });
+    };
 };

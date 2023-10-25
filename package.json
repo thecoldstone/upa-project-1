@@ -5,14 +5,17 @@
   "devDependencies": {
     "@influxdata/influxdb-client": "^1.33.2",
     "@influxdata/influxdb-client-apis": "^1.33.2",
+    "@types/node": "^20.8.8",
     "@types/xml2js": "^0.4.12",
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "tslib": "^2.6.2"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
     "commander": "^11.0.0",
+    "neo4j-driver": "^5.13.0",
     "xml2js": "^0.6.2"
   }
 }
