@@ -1,7 +1,7 @@
 export class Client {
-    constructor() {};
+  constructor() {}
 
-    log(text: string, status: string = 'OK') {
-        console.log(`[${status === 'OK' ? '+' : '!'}] ${text}`);
-    };
+  log(text: string, status: string = "OK") {
+    console.log(`[${status === "OK" ? "+" : "!"}] ${text}`);
+  }
 }
