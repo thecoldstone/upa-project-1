@@ -3,8 +3,10 @@ import { Neo4jClient } from "./clients/neo4j";
 import { program } from "commander";
 import { Parser } from 'xml2js';
 
-program
-	.command("influx")
+/**
+ * @todo reading file from stdin
+ */
+program.command("influx")
 	.description("CLI for InfluxDB")
 	.option('-f, --file [items...]', 'XML file to parse, where [file] [bucketName]')
 	.option('-q, --query', 'Query to execute')
@@ -22,7 +24,7 @@ program
 			const parserXML = new Parser();
 			const data = await parserXML.parseStringPromise(xmlText) as Temperature;
 			// TODO
-		} 
+		}
 		if(options.query) {
 			influxDB.queryData();
 		}

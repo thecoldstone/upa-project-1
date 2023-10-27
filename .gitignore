@@ -2,6 +2,8 @@
 
 # Logs
 
+.DS_Store
+
 data/
 
 logs

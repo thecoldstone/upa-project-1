@@ -1,8 +1,8 @@
-import { Driver, driver, auth, resultTransformers } from 'neo4j-driver';
+import neo4j from 'neo4j-driver/lib/browser/neo4j-web.esm.js';
 import { Client } from './client';
 
 export class Neo4jClient extends Client {
-    _driver?: Driver;
+    _driver?: neo4j.Driver;
 
     constructor() {
         super();
@@ -13,7 +13,7 @@ export class Neo4jClient extends Client {
             this.log("Connecting to Neo4j...");
             this.log(`URL: ${url}, USER: ${user}, PWD: ${password}`);
 
-            this._driver = driver(url, auth.basic(user, password), {
+            this._driver = neo4j.driver(url, neo4j.auth.basic(user, password), {
                 logging: {
                     level: 'debug',
                     logger: (level, message) => this.log(`[${level}] ${message}`)
@@ -32,7 +32,7 @@ export class Neo4jClient extends Client {
 
     async query(query: string) {
         const result = await this._driver?.executeQuery(query, {}, {
-            resultTransformer: resultTransformers.mappedResultTransformer({
+            resultTransformer: neo4j.resultTransformers.mappedResultTransformer({
                 map(record) {
                     return record.get("name")
                 }
