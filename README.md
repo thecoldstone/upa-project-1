@@ -12,10 +12,19 @@ To install bun dependencies:
 bun install
 ```
 
-To run:
+To show all allowed commands:
 
 ```bash
-bun run index.ts
+bun index.ts --help
+Usage: index [options] [command]
+
+Options:
+  -h, --help        display help for command
+
+Commands:
+  influx [options]  CLI for InfluxDB
+  neo4j [options]   CLI for Neo4j
+  help [command]    display help for command
 ```
 
 # Documentation
@@ -32,7 +41,11 @@ For the puproses of working with Neo4J database was chosen the following dataset
 
 As a format was chosen ".csv" because there is no need of having geographical features for particular dataset.
 
-It contains a list of development projects in the municipality of Brno where every row is represented as an individual project with information of its developer, architect studio or company, type of investion, state of progress and more. Thus, it can be considered as heterogeneous dataset. Among the potential issues of specific dataset is irregular frequency of updates. The most concerning issue is missing data for some of projects where some fields are left empty. It leads to an aggregation of multiple projects into one. 
+It contains a list of development projects in the municipality of Brno where every row is represented as an individual project with information of its developer, architect studio or company, type of investion, state of progress and more. Thus, it can be considered as heterogeneous dataset where Neo4J can only levearage of it. Neo4J will allow to map different enteties to nodes connected by different kinds of relationships.
+
+Among the potential issues of specific dataset is irregular frequenc of updates. The most concerning issue is missing data for some of projects where some fields are left empty. It leads to an aggregation of multiple projects into one which decreases the overall quality of dataset.
+
+On the bright side, Neo4J [scales](https://neo4j.com/product/neo4j-graph-database/scalability/#:~:text=Neo4j%20scales%20out%20as%20data,for%20a%20very%20large%20graph.) out pretty well for large data. It uses the technique known as "sharding" which enables to divide a database into smaller ones which are called shards. Apart of it, individual [queries](https://neo4j.com/docs/cypher-manual/current/planning-and-tuning/query-tuning/) can be tunned and perform better with correct understanding of need to extract only necessary data.
 
 2. **InfluxDB**
 
