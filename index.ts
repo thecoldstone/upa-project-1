@@ -19,6 +19,7 @@ program
     const url = process.env.URL || "http://localhost:8086";
     const token = process.env.TOKEN || "dummy-token";
     const org = process.env.ORGANIZATION || "dummy-organization";
+    const bucketName = process.env.BUCKET || "dummy-bucket";
     const influxDB = new InfluxDBClient(url, token, org);
 
     if (options.file) {
@@ -26,7 +27,8 @@ program
       const xmlText = await xmlFile.text();
       const parserXML = new Parser();
       const data = (await parserXML.parseStringPromise(xmlText)) as Temperature;
-      // TODO
+
+      influxDB.writeData(bucketName, data);
     }
     if (options.query) {
       influxDB.queryData();

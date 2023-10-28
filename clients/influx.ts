@@ -53,7 +53,7 @@ export class InfluxDBClient extends Client {
         2,
       ),
     );
-  }
+  };
 
   async createBucket(name: string) {
     const orgsAPI = new OrgsAPI(this._influxDB);
@@ -89,11 +89,13 @@ export class InfluxDBClient extends Client {
     const writeApi = this._influxDB.getWriteApi(this.org, bucket, "ms");
     const temperatures = data.teploty.teplota;
 
+    this.log('Writing data...');
+
     temperatures.forEach((t) => {
       const value = parseFloat(t.hodnota[0]);
       const timestamp = new Date(`${t.datum} ${t.cas}`).getTime();
       const point = new Point("temperature")
-        .tag("temperature", "Bohumin")
+        .tag("sensor", "Bohumin")
         .floatField("value", value)
         .timestamp(timestamp);
 
@@ -107,12 +109,16 @@ export class InfluxDBClient extends Client {
         this.log("Set up a new InfluxDB database");
       }
     }
+
+    this.log('Writing completed.');
   }
 
   async queryData() {
     const queryApi = this._influxDB.getQueryApi(this.org);
     const queryFlux = flux`from(bucket:${process.env.BUCKET})
-            |> range(start: 2023-09-14T12:00:00.000Z, stop: 2023-09-14T23:00:00.000Z)`;
+            |> range(start: 2023-09-14T12:00:00.000Z, stop: 2023-09-14T23:00:00.000Z)
+	    |> filter(fn: (r) => r._measurement == "temperature" and r["sensor"] == "Bohumin")
+	    |> mean()`;
 
     this.log(`Querying data with ${queryFlux}`);
 
