@@ -31,24 +31,32 @@ export class Neo4jClient extends Client {
         await this._queryArchitects();
         break;
       default:
-        this.log("No query specified");
+        await this._query(query);
     }
-  }
+  };
 
   async _queryArchitects() {
     const { records, summary, keys } = await this._driver?.executeQuery(
       "match (a:Architect) return a.name as name",
       {},
       { database: "neo4j" },
-    );
+    )
 
     for (const record of records) {
       this.log(`${record.get("name")}`);
     }
-  }
+  };
+
+  async _query(query: string) {
+	const { records, summary, keys } = await this._driver?.executeQuery(query, {}, {database: "neo4j"});
+
+	for (const record of records) {
+		this.log(`${JSON.stringify(record.get(keys[0]))}`);
+	}
+  };
 
   async close() {
     this.log("Closing Neo4j connection");
     await this._driver?.close();
-  }
-}
+  };
+};
